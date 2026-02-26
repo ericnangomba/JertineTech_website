@@ -6,7 +6,6 @@ import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Bot, Loader2, Send } from 'lucide-react';
 
-import { aiFAQ, type AiFAQInput, type AiFAQOutput } from '@/ai/flows/ai-faq';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -20,6 +19,10 @@ const faqFormSchema = z.object({
 });
 
 type FaqFormValues = z.infer<typeof faqFormSchema>;
+type FaqApiResponse = {
+  answer?: string;
+  error?: string;
+};
 
 interface FaqSectionProps {
   id: string;
@@ -64,8 +67,23 @@ export default function FaqSection({ id }: FaqSectionProps) {
     setError(null);
     setAnswer(null);
     try {
-      const input: AiFAQInput = { question: data.question };
-      const result: AiFAQOutput = await aiFAQ(input);
+      const response = await fetch('/api/faq', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: data.question }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Unable to fetch AI response');
+      }
+
+      const result = (await response.json()) as FaqApiResponse;
+      if (!result.answer) {
+        throw new Error(result.error ?? 'No answer returned');
+      }
+
       setAnswer(result.answer);
     } catch (_error) {
       setAnswer(getFallbackAnswer(data.question));

@@ -4,6 +4,15 @@ const nextConfig: NextConfig = {
   /* config options here */
   devIndicators: false,
   outputFileTracingRoot: process.cwd(),
+  serverExternalPackages: [
+    'genkit',
+    '@genkit-ai/core',
+    '@genkit-ai/googleai',
+    '@opentelemetry/sdk-node',
+    '@opentelemetry/exporter-jaeger',
+    'handlebars',
+    'dotprompt',
+  ],
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -31,6 +40,17 @@ const nextConfig: NextConfig = {
         destination: '/?view=service&service=:slug',
       },
     ];
+  },
+  webpack(config) {
+    config.ignoreWarnings = [
+      ...(config.ignoreWarnings ?? []),
+      { module: /@opentelemetry[\\/]sdk-node/ },
+      { module: /handlebars/ },
+      /Can't resolve '@opentelemetry\/exporter-jaeger'/,
+      /require\.extensions is not supported by webpack/,
+    ];
+
+    return config;
   },
 };
 
