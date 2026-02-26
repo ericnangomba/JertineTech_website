@@ -32,13 +32,13 @@ export default function HeroSection({ id }: HeroSectionProps) {
           <h1 className="animate-fade-up font-headline text-4xl font-bold leading-tight text-white md:text-6xl lg:text-7xl">
             Systems Intergration.
             <br />
-            <span className="text-accent">Software that ships. Hardware that holds.</span>
+            <span className="text-lime-300">Software that ships. Hardware that holds.</span>
           </h1>
           <p className="animate-fade-up animate-delay-100 mx-auto mt-6 max-w-2xl text-base text-white/85 md:text-xl">
             From custom application development to desktop and network support, we keep your business technology reliable and fast.
           </p>
           <div className="animate-fade-up animate-delay-200 mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button size="lg" asChild className="rounded-full bg-accent px-8 text-accent-foreground hover:bg-accent/85">
+            <Button size="lg" asChild className="rounded-full bg-lime-400 px-8 text-black hover:bg-lime-300">
               <Link href="#solutions">
                 Explore Services <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
@@ -49,13 +49,13 @@ export default function HeroSection({ id }: HeroSectionProps) {
           </div>
           <div className="animate-fade-up animate-delay-300 mt-10 grid gap-3 text-sm text-white/90 sm:grid-cols-3">
             <p className="glass-card flex items-center justify-center gap-2 px-4 py-3">
-              <CheckCircle2 className="h-4 w-4 text-accent" /> Full-stack software delivery
+              <CheckCircle2 className="h-4 w-4 text-lime-300" /> Full-stack software delivery
             </p>
             <p className="glass-card flex items-center justify-center gap-2 px-4 py-3">
-              <Zap className="h-4 w-4 text-accent" /> Hardware and IT support
+              <Zap className="h-4 w-4 text-lime-300" /> Hardware and IT support
             </p>
             <p className="glass-card flex items-center justify-center gap-2 px-4 py-3">
-              <Sparkles className="h-4 w-4 text-accent" /> Elegant, modern execution
+              <Sparkles className="h-4 w-4 text-lime-300" /> Elegant, modern execution
             </p>
           </div>
         </div>
@@ -63,4 +63,3 @@ export default function HeroSection({ id }: HeroSectionProps) {
     </section>
   );
 }
-
