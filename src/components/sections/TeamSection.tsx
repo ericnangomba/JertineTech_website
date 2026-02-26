@@ -1,50 +1,26 @@
-// src/components/sections/TeamSection.tsx
+import Image, { type StaticImageData } from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import Image from 'next/image';
+import { BriefcaseBusiness } from 'lucide-react';
+import Reveal from '@/components/ui/reveal';
 
-// Import your team member images from the src directory
-// Adjust the paths based on the exact location within src/images
 import johannesVenterImage from '../../images/johannesventer.jpg';
 import ericImage from '../../images/eric.jpg';
 import xolisilePicImage from '../../images/xolisilepic.png';
-import welfordKulisewaImage from '../../images/welford.jpeg'; // Assuming this is in a 'team' subfolder
+import welfordKulisewaImage from '../../images/welford.jpeg';
 import unathiDoboImage from '../../images/unathi dobo.png';
-
 
 interface TeamMember {
   name: string;
   role: string;
-  // The type of the imported image might be different than 'string'
-  // Using 'any' is a quick fix, or you can try to infer the correct type
-  image: any;
+  image: StaticImageData;
 }
 
 const teamMembers: TeamMember[] = [
-  {
-    name: 'Johennes Venter.',
-    role: 'UI/UX Designer',
-    image: johannesVenterImage, // Use the imported variable
-  },
-  {
-    name: 'Eric Nangomba.',
-    role: 'Lead Developer',
-    image: ericImage, // Use the imported variable
-  },
-  {
-    name: 'Xolisile Gwebityala.',
-    role: 'Lead Developer',
-    image: xolisilePicImage, // Use the imported variable
-  },
-  {
-    name: 'Welford Kulisewa.',
-    role: 'Project Manager',
-    image: welfordKulisewaImage, // Use the imported variable
-  },
-  {
-    name: 'Unathi Dobo.',
-    role: 'Marketing Specialist',
-    image: unathiDoboImage, // Use the imported variable
-  },
+  { name: 'Johannes Venter', role: 'UI/UX Designer', image: johannesVenterImage },
+  { name: 'Eric Nangomba', role: 'Lead Developer', image: ericImage },
+  { name: 'Xolisile Gwebityala', role: 'Lead Developer', image: xolisilePicImage },
+  { name: 'Welford Kulisewa', role: 'Project Manager', image: welfordKulisewaImage },
+  { name: 'Unathi Dobo', role: 'Marketing Specialist', image: unathiDoboImage },
 ];
 
 interface TeamSectionProps {
@@ -53,33 +29,38 @@ interface TeamSectionProps {
 
 export default function TeamSection({ id }: TeamSectionProps) {
   return (
-    <section
-      id={id}
-      className="py-16 md:py-24 bg-primary text-primary-foreground" // Changed bg-secondary to bg-primary and text-secondary-foreground to text-primary-foreground
-    >
-      {/* The recursive call <TeamSection id="team" /> was removed from here */}
-      <div className="container mx-auto px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-12 font-headline">
-          Meet Our <span className="text-accent">Team</span>
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+    <section id={id} className="py-20 md:py-28">
+      <div className="section-shell">
+        <Reveal>
+          <h2 className="text-center font-body text-3xl font-bold md:text-5xl">
+            Software and hardware
+            <span className="block text-lime-300">specialists under one roof.</span>
+          </h2>
+        </Reveal>
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
           {teamMembers.map((member, index) => (
-            <Card key={index} className="overflow-hidden group hover:shadow-lg transition-shadow duration-300">
-              <div className="relative w-full h-64">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  layout="fill"
-                  objectFit="cover"
-                  className="transform group-hover:scale-105 transition-transform duration-500"
-                  data-ai-hint="person portrait"
-                />
-              </div>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold mb-1 font-headline">{member.name}</h3>
-                <p className="text-muted-foreground text-sm">{member.role}</p>
-              </CardContent>
-            </Card>
+            <Reveal key={member.name} delayMs={index * 65}>
+              <Card className="glass-card hover-lift group overflow-hidden border-white/15">
+                <div className="relative h-60 w-full">
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    fill
+                    sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    className="relative z-10 object-cover transition-transform duration-500 group-hover:scale-105"
+                    data-ai-hint="person portrait"
+                  />
+                  <div className="pointer-events-none absolute bottom-0 left-0 z-20 h-1 w-0 bg-lime-300 transition-all duration-300 group-hover:w-full" />
+                </div>
+                <CardContent className="p-4">
+                  <p className="font-body text-lg font-semibold">{member.name}</p>
+                  <p className="mt-1 flex items-center gap-1 text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                    <BriefcaseBusiness className="h-3.5 w-3.5 text-lime-300" />
+                    {member.role}
+                  </p>
+                </CardContent>
+              </Card>
+            </Reveal>
           ))}
         </div>
       </div>

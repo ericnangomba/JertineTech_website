@@ -3,155 +3,204 @@
 
 import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, X } from 'lucide-react'; // No need for Zap anymore if replacing
+import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import Image from 'next/image'; // Import Image component
+import BrandWordmark from '@/components/BrandWordmark';
 
-// Import your logo image here
-import YourCompanyLogo from '../../images/jertinetechlogo.png'; // ADJUST THIS PATH IF NECESSARY
+interface NavItem {
+  label: string;
+  href: string;
+  section?: string;
+}
 
 const navItems = [
-  { label: 'Home', href: '#hero' },
-  { label: 'Solutions', href: '#solutions' },
-  { label: 'About Us', href: '#about' },
-  { label: 'Why Us', href: '#why-us' },
-  { label: 'Process', href: '#process' },
-  { label: 'Testimonials', href: '#testimonials' },
-  { label: 'FAQ', href: '#faq' },
-  { label: 'Contact', href: '#contact' },
-];
+  { label: 'Home', href: '/#hero', section: '#hero' },
+  { label: 'Services', href: '/services' },
+  { label: 'About', href: '/#about', section: '#about' },
+  { label: 'Why Us', href: '/#why-us', section: '#why-us' },
+  { label: 'Process', href: '/#process', section: '#process' },
+  { label: 'Results', href: '/#results', section: '#results' },
+  { label: 'FAQ', href: '/#faq', section: '#faq' },
+  { label: 'Contact', href: '/#contact', section: '#contact' },
+] satisfies NavItem[];
 
 export default function Header() {
-  const [activeSection, setActiveSection] = useState('#hero');
+  const pathname = usePathname();
+  const isHomeRoute = pathname === '/';
+  const isServicesRoute = pathname === '/services' || pathname.startsWith('/services/');
+
+  const [activeSection, setActiveSection] = useState<string>('#hero');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const handleScroll = useCallback(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    if (!isHomeRoute) {
+      setIsScrolled(true);
+      return;
+    }
+
     const scrollPosition = window.scrollY;
     setIsScrolled(scrollPosition > 50);
 
     let currentSection = '';
-    navItems.forEach(item => {
-      const section = document.querySelector(item.href) as HTMLElement;
+    navItems.forEach((item) => {
+      if (!item.section) return;
+      const section = document.querySelector(item.section) as HTMLElement;
       if (section) {
-        const sectionTop = section.offsetTop - 100; // Adjusted for sticky header
+        const sectionTop = section.offsetTop - 100;
         const sectionBottom = sectionTop + section.offsetHeight;
         if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-          currentSection = item.href;
+          currentSection = item.section;
         }
       }
     });
 
-    if (currentSection && currentSection !== activeSection) {
-      setActiveSection(currentSection);
+    if (currentSection) {
+      setActiveSection((previous) => (previous === currentSection ? previous : currentSection));
     } else if (!currentSection && scrollPosition < window.innerHeight / 2) {
-      // Default to hero if at the top and no other section matches
-      setActiveSection('#hero');
+      setActiveSection((previous) => (previous === '#hero' ? previous : '#hero'));
     }
-  }, [activeSection]);
+  }, [isHomeRoute]);
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial check
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
+    if (!isHomeRoute) {
+      setIsScrolled(true);
+      setActiveSection('');
+      return;
+    }
 
-  const handleNavLinkClick = (href: string) => {
-    setActiveSection(href);
+    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll, isHomeRoute]);
+
+  const handleNavLinkClick = (item: NavItem, event?: { preventDefault: () => void }) => {
     setIsMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
+
+    if (!item.section) return;
+    if (typeof window === 'undefined' || !isHomeRoute) {
+      return;
+    }
+
+    event?.preventDefault();
+    setActiveSection(item.section);
+    const element = document.querySelector(item.section);
+    if (element instanceof HTMLElement) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
+  const handleStartProjectClick = (event?: { preventDefault: () => void }) => {
+    setIsMobileMenuOpen(false);
+    if (typeof window === 'undefined' || !isHomeRoute) {
+      return;
+    }
+    event?.preventDefault();
+    setActiveSection('#contact');
+    const element = document.querySelector('#contact');
+    if (element instanceof HTMLElement) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const isNavItemActive = (item: NavItem): boolean => {
+    if (item.href === '/services') {
+      return isServicesRoute;
+    }
+    if (item.section) {
+      return isHomeRoute && activeSection === item.section;
+    }
+    return false;
+  };
+
   return (
-    <header className={cn(
-      "sticky top-0 z-50 w-full transition-all duration-300",
-      isScrolled ? "bg-background/80 backdrop-blur-md shadow-lg" : "bg-transparent"
-    )}>
-      <div className="container mx-auto px-4 flex items-center justify-between h-20">
-        <Link href="/" passHref>
-          {/* Replace Zap icon and text with the Image component */}
-          <div className="flex items-center cursor-pointer" onClick={() => handleNavLinkClick('#hero')}>
-             <Image
-               src={YourCompanyLogo} // Use the imported logo variable
-               alt="JertineTech Company Logo" // Provide descriptive alt text
-               width={160} // !!! Adjust default desktop width as needed !!!
-               height={50} // !!! Adjust default desktop height as needed !!!
-               // Add responsive classes here if you want the size to change on different screen sizes
-               // className="w-[160px] h-[50px] md:w-[180px] md:h-[55px] lg:w-[200px] lg:h-[60px]" // Example responsive classes
-             />
-          </div>
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full transition-all duration-300",
+        !isHomeRoute || isScrolled
+          ? "border-b border-white/10 bg-background/70 backdrop-blur-xl"
+          : "bg-transparent"
+      )}
+    >
+      <div className="section-shell flex h-20 items-center justify-between">
+        <Link href="/" className="flex items-center gap-3">
+          <BrandWordmark className="text-2xl" />
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex space-x-1">
-          {navItems.map(item => (
+        <nav className="hidden items-center gap-1 md:flex">
+          {navItems.map((item) => (
             <Button
               key={item.label}
               variant="ghost"
               asChild
               className={cn(
-                "text-foreground hover:bg-primary/10 hover:text-accent",
-                activeSection === item.href && "text-accent font-semibold border-b-2 border-accent rounded-none"
+                "rounded-full px-4 text-sm font-medium text-foreground/85 hover:bg-white/10 hover:text-white",
+                isNavItemActive(item) && "bg-white/10 text-white"
               )}
             >
-              <a onClick={(e) => { e.preventDefault(); handleNavLinkClick(item.href); }} href={item.href}>
+              <Link onClick={(e) => handleNavLinkClick(item, e)} href={item.href}>
                 {item.label}
-              </a>
+              </Link>
             </Button>
           ))}
         </nav>
 
-        {/* Mobile Navigation */}
+        <div className="hidden md:block">
+          <Button asChild className="rounded-full bg-lime-400 px-6 text-black hover:bg-lime-300">
+            <Link href="/#contact" onClick={(e) => handleStartProjectClick(e)}>Start a Project</Link>
+          </Button>
+        </div>
+
         <div className="md:hidden">
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6 text-foreground" />
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <Menu className="h-5 w-5 text-foreground" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] bg-card text-card-foreground p-0">
-              <div className="flex flex-col h-full">
-                <div className="flex items-center justify-between p-4 border-b">
-                   <Link href="/" passHref>
-                    {/* Replace Zap icon and text with the Image component in mobile menu */}
-                    <div className="flex items-center cursor-pointer" onClick={() => handleNavLinkClick('#hero')}>
-                       <Image
-                         src={YourCompanyLogo} // Use the imported logo variable
-                         alt="JertineTech Company Logo" // Provide descriptive alt text
-                         width={140} // !!! Adjust mobile width as needed !!!
-                         height={45} // !!! Adjust mobile height as needed !!!
-                         // Add responsive classes here if further adjustments are needed
-                       />
-                    </div>
+            <SheetContent side="right" className="w-[290px] border-white/10 bg-background/95 p-0 text-card-foreground backdrop-blur-xl">
+              <div className="flex h-full flex-col">
+                <div className="flex items-center justify-between border-b border-white/10 p-4">
+                  <Link href="/" className="flex items-center gap-2">
+                    <BrandWordmark className="text-xl" />
                   </Link>
-                  <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
-                    <X className="h-6 w-6" />
+                  <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setIsMobileMenuOpen(false)}>
+                    <X className="h-5 w-5" />
                     <span className="sr-only">Close menu</span>
                   </Button>
                 </div>
-                <nav className="flex-grow p-4 space-y-2">
-                  {navItems.map(item => (
+                <nav className="flex flex-1 flex-col gap-2 p-4">
+                  {navItems.map((item) => (
                     <Button
                       key={item.label}
                       variant="ghost"
                       asChild
                       className={cn(
-                        "w-full justify-start text-lg py-3",
-                        activeSection === item.href ? "text-accent bg-accent/10" : "text-foreground hover:bg-primary/10 hover:text-accent"
+                        "justify-start rounded-xl text-base",
+                        isNavItemActive(item)
+                          ? "bg-white/10 text-white"
+                          : "text-foreground/85 hover:bg-white/10 hover:text-white"
                       )}
                     >
-                      <a onClick={(e) => { e.preventDefault(); handleNavLinkClick(item.href); }} href={item.href}>
+                      <Link onClick={(e) => handleNavLinkClick(item, e)} href={item.href}>
                         {item.label}
-                      </a>
+                      </Link>
                     </Button>
                   ))}
                 </nav>
+                <div className="border-t border-white/10 p-4">
+                  <Button asChild className="w-full rounded-full bg-lime-400 text-black hover:bg-lime-300">
+                    <Link href="/#contact" onClick={(e) => handleStartProjectClick(e)}>Start a Project</Link>
+                  </Button>
+                </div>
               </div>
             </SheetContent>
           </Sheet>

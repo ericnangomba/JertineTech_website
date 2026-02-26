@@ -1,49 +1,30 @@
-// src/components/sections/TestimonialsSection.tsx
 import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Star } from 'lucide-react'; // For ratings
+import { Quote, Star } from 'lucide-react';
+import Reveal from '@/components/ui/reveal';
 
 interface Testimonial {
   name: string;
   company: string;
-  avatarUrl?: string;
-  avatarFallback: string;
-  testimonial: string;
-  rating: number;
+  quote: string;
 }
 
 const testimonials: Testimonial[] = [
   {
-    name: 'Sarah Miller',
-    company: 'Miller\'s Boutique Bakery',
-    avatarUrl: 'https://placehold.co/100x100.png?text=SM',
-    avatarFallback: 'SM',
-    testimonial: "Jertine Tech revolutionized our online presence! Their team was professional, creative, and delivered exactly what we needed on time and budget. Our sales have increased significantly since the new website launch.",
-    rating: 5,
+    name: 'Thabo Mokoena',
+    company: 'Mokoena Logistics',
+    quote: 'They rebuilt our operations portal and fixed recurring office hardware issues. Productivity jumped within weeks.',
   },
   {
-    name: 'John B. Good',
-    company: 'GoodBuild Construction',
-    avatarUrl: 'https://placehold.co/100x100.png?text=JB',
-    avatarFallback: 'JB',
-    testimonial: "The graphic design work Jertine Tech provided for our rebranding was exceptional. They truly understood our vision and translated it into a powerful visual identity. Highly recommended!",
-    rating: 5,
+    name: 'Nadine Peters',
+    company: 'Peters Medical Supply',
+    quote: 'From custom software workflows to desktop support, Jertine gave us one reliable team for all technical operations.',
   },
   {
-    name: 'Ayanda Khumalo',
-    company: 'AK Consulting Services',
-    avatarUrl: 'https://placehold.co/100x100.png?text=AK',
-    avatarFallback: 'AK',
-    testimonial: "Whenever we have IT issues, Jertine Tech is our go-to. Their support is prompt, reliable, and they always find a solution. They've saved us countless hours of downtime.",
-    rating: 5,
+    name: 'Ameen Ismail',
+    company: 'Ismail Engineering',
+    quote: 'Their support SLA and software improvements reduced our downtime and made project tracking far easier.',
   },
 ];
-
-const renderStars = (rating: number) => {
-  return Array(5).fill(null).map((_, i) => (
-    <Star key={i} className={`h-5 w-5 ${i < rating ? 'text-accent fill-accent' : 'text-muted-foreground/50'}`} />
-  ));
-};
 
 interface TestimonialsSectionProps {
   id: string;
@@ -51,34 +32,35 @@ interface TestimonialsSectionProps {
 
 export default function TestimonialsSection({ id }: TestimonialsSectionProps) {
   return (
-    <section id={id} className="py-16 md:py-24 bg-background text-foreground">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 font-headline">
-          What Our <span className="text-accent">Clients Say</span>
-        </h2>
-        <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-          We pride ourselves on building strong relationships and delivering results. Here's what some of our valued clients have to share.
-        </p>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <section id={id} className="py-20 md:py-28">
+      <div className="section-shell">
+        <Reveal>
+          <h2 className="text-center font-body text-3xl font-bold md:text-5xl">
+            Trusted by teams with
+            <span className="block text-red-300">real technical pressure.</span>
+          </h2>
+        </Reveal>
+        <div className="mt-12 grid gap-6 lg:grid-cols-3">
           {testimonials.map((item, index) => (
-            <Card key={index} className="bg-card text-card-foreground shadow-lg flex flex-col">
-              <CardContent className="p-6 flex-grow flex flex-col">
-                <div className="flex items-center mb-4">
-                  <Avatar className="h-12 w-12 mr-4">
-                    <AvatarImage src={item.avatarUrl} alt={item.name} data-ai-hint="person portrait" />
-                    <AvatarFallback>{item.avatarFallback}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold text-card-foreground">{item.name}</p>
-                    <p className="text-sm text-muted-foreground">{item.company}</p>
+            <Reveal key={item.name} delayMs={index * 70}>
+              <Card className="glass-card hover-lift rounded-2xl border-white/15 bg-white/[0.04]">
+                <CardContent className="p-6">
+                  <div className="mb-4 flex items-center justify-between">
+                    <Quote className="h-5 w-5 text-red-300" />
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-lime-300 text-lime-300" />
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <div className="flex mb-3">{renderStars(item.rating)}</div>
-                <blockquote className="text-sm text-muted-foreground italic border-l-4 border-accent pl-4 py-2 flex-grow">
-                  "{item.testimonial}"
-                </blockquote>
-              </CardContent>
-            </Card>
+                  <p className="text-sm text-foreground/90">"{item.quote}"</p>
+                  <div className="mt-5 border-t border-white/10 pt-4">
+                    <p className="font-semibold">{item.name}</p>
+                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{item.company}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Reveal>
           ))}
         </div>
       </div>

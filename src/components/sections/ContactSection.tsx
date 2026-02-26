@@ -1,39 +1,45 @@
-// src/components/sections/ContactSection.tsx
 "use client";
 
+import { useRef, useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { Loader2, Mail, MapPin, Phone, Send } from 'lucide-react';
+
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
-import { Mail, Phone, MapPin, Send, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import Reveal from '@/components/ui/reveal';
+import {
+  contactSubmissionSchema,
+  hasUnsafeInput,
+  type ContactSubmissionPayload,
+} from '@/lib/contact-security';
 
-const contactFormSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  subject: z.string().min(5, { message: "Subject must be at least 5 characters." }),
-  message: z.string().min(10, { message: "Message must be at least 10 characters." }).max(500, { message: "Message must be less than 500 characters." }),
-});
-type ContactFormValues = z.infer<typeof contactFormSchema>;
+async function submitInquiryAction(data: ContactSubmissionPayload): Promise<{ success: boolean; message: string }> {
+  const response = await fetch('/api/contact', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
 
-// Mock server action - replace with actual implementation
-async function submitInquiryAction(data: ContactFormValues): Promise<{ success: boolean; message: string }> {
-  console.log("Submitting inquiry:", data);
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1500));
-  // Simulate random success/failure
-  // if (Math.random() > 0.2) {
-    return { success: true, message: "Your inquiry has been sent successfully! We'll get back to you soon." };
-  // } else {
-  //   return { success: false, message: "Failed to send inquiry. Please try again later." };
-  // }
+  const result = (await response.json()) as { success?: boolean; message?: string };
+
+  if (!response.ok) {
+    return {
+      success: false,
+      message: result.message ?? 'Submission failed. Please try again.',
+    };
+  }
+
+  return {
+    success: true,
+    message: result.message ?? "Your inquiry was sent. We'll reply within one business day.",
+  };
 }
-
 
 interface ContactSectionProps {
   id: string;
@@ -42,40 +48,50 @@ interface ContactSectionProps {
 export default function ContactSection({ id }: ContactSectionProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const startedAtRef = useRef<number>(Date.now());
 
-  const form = useForm<ContactFormValues>({
-    resolver: zodResolver(contactFormSchema),
+  const form = useForm<ContactSubmissionPayload>({
+    resolver: zodResolver(contactSubmissionSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
+      name: '',
+      email: '',
+      message: '',
+      companyWebsite: '',
+      startedAt: startedAtRef.current,
     },
   });
 
-  const onSubmit: SubmitHandler<ContactFormValues> = async (data) => {
+  const onSubmit: SubmitHandler<ContactSubmissionPayload> = async (data) => {
+    // Defense-in-depth check before passing values onward.
+    if (
+      hasUnsafeInput(data.name) ||
+      hasUnsafeInput(data.email) ||
+      hasUnsafeInput(data.message)
+    ) {
+      toast({
+        title: 'Blocked',
+        description: 'Unsafe input detected. Please remove code-like content and try again.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const result = await submitInquiryAction(data); // Use the server action
-      if (result.success) {
-        toast({
-          title: "Success!",
-          description: result.message,
-          variant: "default",
-        });
-        form.reset();
-      } else {
-        toast({
-          title: "Error",
-          description: result.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
+      const result = await submitInquiryAction(data);
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
+        title: result.success ? 'Message Sent' : 'Submission Failed',
+        description: result.message,
+        variant: result.success ? 'default' : 'destructive',
+      });
+      if (result.success) {
+        form.reset();
+      }
+    } catch (_error) {
+      toast({
+        title: 'Error',
+        description: 'An unexpected error occurred. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
@@ -83,125 +99,101 @@ export default function ContactSection({ id }: ContactSectionProps) {
   };
 
   return (
-    <section id={id} className="py-16 md:py-24 bg-primary text-primary-foreground">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 font-headline">
-          Get In <span className="text-accent">Touch</span>
-        </h2>
-        <p className="text-lg text-primary-foreground/80 text-center mb-12 max-w-2xl mx-auto">
-          Ready to start your digital transformation? Have a question? We'd love to hear from you. Fill out the form below or reach out via our contact details.
-        </p>
+    <section id={id} className="pb-24 pt-20 md:pb-28 md:pt-28">
+      <div className="section-shell grid gap-8 lg:grid-cols-2">
+        <div>
+          <Reveal>
+            <h2 className="font-body text-3xl font-bold md:text-5xl">
+              Need software delivery
+              <span className="block text-lime-300">plus dependable hardware support?</span>
+            </h2>
+          </Reveal>
+          <Reveal delayMs={80}>
+            <p className="mt-5 max-w-lg text-muted-foreground">
+              Tell us your technical pressure points. We will propose a scoped software plan and the right support model for your devices and infrastructure.
+            </p>
+          </Reveal>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          <Card className="bg-card text-card-foreground shadow-xl">
-            <CardHeader>
-              <CardTitle className="font-headline text-2xl">Send us a Message</CardTitle>
-              <CardDescription>We typically respond within 24 business hours.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="John Doe" {...field} className="bg-background/80 text-foreground placeholder:text-muted-foreground" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email Address</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="john.doe@example.com" {...field} className="bg-background/80 text-foreground placeholder:text-muted-foreground" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="subject"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Subject</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Inquiry about Web Development" {...field} className="bg-background/80 text-foreground placeholder:text-muted-foreground" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="message"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Message</FormLabel>
-                        <FormControl>
-                          <Textarea placeholder="Tell us more about your project or question..." {...field} rows={5} className="bg-background/80 text-foreground placeholder:text-muted-foreground" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="mr-2 h-4 w-4" />
-                        Send Inquiry
-                      </>
-                    )}
-                  </Button>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-8 text-primary-foreground">
-            <div>
-              <h3 className="text-2xl font-semibold mb-4 font-headline text-accent">Contact Information</h3>
-              <p className="text-primary-foreground/80 mb-6">
-                Feel free to reach out to us directly through any of the channels below. We're here to help!
+          <Reveal delayMs={120}>
+            <div className="mt-8 space-y-4 text-sm">
+              <p className="flex items-center gap-3">
+                <Mail className="h-5 w-5 text-lime-300" />
+                info@jertinetech.co.za
+              </p>
+              <p className="flex items-center gap-3">
+                <Phone className="h-5 w-5 text-lime-300" />
+                +27 79 856 7196
+              </p>
+              <p className="flex items-center gap-3">
+                <MapPin className="h-5 w-5 text-red-300" />
+                Serving South African teams nationwide
               </p>
             </div>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <Mail className="h-6 w-6 text-accent flex-shrink-0" />
-                <a href="mailto:info@jertinetech.co.za" className="hover:text-accent transition-colors">info@jertinetech.co.za</a>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="h-6 w-6 text-accent flex-shrink-0" />
-                <a href="tel:+27123456789" className="hover:text-accent transition-colors">+27 (+27 82 325 6700) </a>
-              </div>
-              <div className="flex items-start space-x-3">
-                <MapPin className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
-                <div>
-                  <p>21 Helenic Avenue, Green Point</p>
-                  <p>Cape Town, South Africa, 7925 </p>
-                </div>
-              </div>
-            </div>
-            <div className="mt-8">
-              <h4 className="text-xl font-semibold mb-2 font-headline text-accent">Business Hours</h4>
-              <p>Monday - Friday: 9:00 AM - 5:00 PM</p>
-              <p>Saturday - Sunday: Closed</p>
-            </div>
-          </div>
+          </Reveal>
         </div>
+
+        <Reveal delayMs={140}>
+        <div className="glass-card hover-lift sheen rounded-2xl p-6 md:p-8">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              <input type="text" tabIndex={-1} autoComplete="off" className="hidden" {...form.register('companyWebsite')} />
+              <input type="hidden" {...form.register('startedAt', { valueAsNumber: true })} />
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Your name" maxLength={80} {...field} className="rounded-xl border-white/20 bg-white/5" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="you@company.com" {...field} className="rounded-xl border-white/20 bg-white/5" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="message"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Message</FormLabel>
+                    <FormControl>
+                      <Textarea rows={5} maxLength={500} placeholder="Tell us about your software requirements and hardware support needs..." {...field} className="rounded-xl border-white/20 bg-white/5" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full rounded-full bg-lime-400 text-black hover:bg-lime-300" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-4 w-4" />
+                    Send Inquiry
+                  </>
+                )}
+              </Button>
+            </form>
+          </Form>
+        </div>
+        </Reveal>
       </div>
     </section>
   );

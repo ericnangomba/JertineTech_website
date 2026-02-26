@@ -10,9 +10,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
-        code: ['monospace', 'monospace'],
+        body: ['ui-sans-serif', 'system-ui', 'Segoe UI', 'sans-serif'],
+        headline: ['"Zhima Mono"', 'ZhiMaMono', 'JetBrains Mono', 'ui-monospace', 'monospace'],
+        code: ['"Zhima Mono"', 'ZhiMaMono', 'JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       colors: {
         background: 'hsl(var(--background))',

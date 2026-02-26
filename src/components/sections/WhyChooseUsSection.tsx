@@ -1,7 +1,6 @@
-// src/components/sections/WhyChooseUsSection.tsx
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { DollarSign, Zap, Users, ShieldCheck } from 'lucide-react'; // Example icons
+import { Clock3, Layers3, ShieldCheck, WalletCards } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import Reveal from '@/components/ui/reveal';
 
 interface USP {
   icon: LucideIcon;
@@ -11,24 +10,24 @@ interface USP {
 
 const usps: USP[] = [
   {
-    icon: DollarSign,
-    title: 'Budget-Friendly Solutions',
-    description: "We offer competitive pricing and transparent quotes, ensuring you get maximum value without breaking the bank. High-quality digital services shouldn't be a luxury.",
+    icon: WalletCards,
+    title: 'Transparent Value',
+    description: 'Clear software scopes and hardware support plans with transparent cost breakdowns.',
   },
   {
-    icon: Zap,
-    title: 'Rapid Deployment',
-    description: "Our streamlined processes allow for quick turnarounds on projects, getting your digital assets live and working for you faster.",
-  },
-  {
-    icon: Users,
-    title: 'Client-Centric Approach',
-    description: "We listen to your needs and tailor our solutions accordingly. Your success is our priority, and we work collaboratively to achieve your goals.",
+    icon: Clock3,
+    title: 'Fast Delivery',
+    description: 'Lean sprints for software plus rapid-response hardware troubleshooting when urgent issues hit.',
   },
   {
     icon: ShieldCheck,
-    title: 'Integrated Services',
-    description: "From code to design to support, we provide a holistic suite of services, saving you the hassle of managing multiple vendors. One partner, many solutions.",
+    title: 'Reliable Execution',
+    description: 'Robust code quality, secure deployments, and disciplined support workflows keep systems stable.',
+  },
+  {
+    icon: Layers3,
+    title: 'One Integrated Team',
+    description: 'Software development and IT hardware support delivered by one accountable team.',
   },
 ];
 
@@ -38,23 +37,30 @@ interface WhyChooseUsSectionProps {
 
 export default function WhyChooseUsSection({ id }: WhyChooseUsSectionProps) {
   return (
-    <section id={id} className="py-16 md:py-24 bg-background text-foreground">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 font-headline">
-          Why Choose <span className="text-accent">Jertine Tech?</span>
-        </h2>
-        <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-          We understand the unique challenges faced by small and medium businesses. Here’s what sets us apart.
-        </p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <section id={id} className="py-20 md:py-28">
+      <div className="section-shell">
+        <Reveal>
+          <h2 className="text-center font-body text-3xl font-bold md:text-5xl">
+            Built for teams that need
+            <span className="block text-lime-300">code and devices to just work.</span>
+          </h2>
+        </Reveal>
+        <Reveal delayMs={80}>
+          <p className="mx-auto mt-5 max-w-2xl text-center text-base text-muted-foreground md:text-lg">
+            We combine software engineering discipline with practical hardware reliability so your operations stay productive.
+          </p>
+        </Reveal>
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {usps.map((usp, index) => (
-            <div key={index} className="flex flex-col items-center text-center p-6 bg-card rounded-lg shadow-md hover:shadow-accent/20 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-              <div className="p-4 bg-accent/10 rounded-full mb-4">
-                <usp.icon className="h-10 w-10 text-accent" />
+            <Reveal key={usp.title} delayMs={index * 70}>
+              <div className="glass-card hover-lift rounded-2xl p-6 text-center">
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-lime-300/30 bg-gradient-to-br from-lime-400/20 to-red-400/15">
+                  <usp.icon className="h-6 w-6 text-lime-300" />
+                </div>
+                <h3 className="font-body text-xl font-semibold text-card-foreground">{usp.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{usp.description}</p>
               </div>
-              <h3 className="text-xl font-semibold mb-2 font-headline text-card-foreground">{usp.title}</h3>
-              <p className="text-sm text-muted-foreground">{usp.description}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>

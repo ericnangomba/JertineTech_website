@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quantum Particle Animation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Inter', sans-serif;
+        }
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .header {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 2;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 20px;
+            border-radius: 16px;
+            color: #e2e8f0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 404px;
+        }
+        .header h1 {
+            margin: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #94a3b8;
+            font-family: 'Inter', sans-serif;
+        }
+        .tech-stack {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .tech-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #64748b;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .tech-item i {
+            font-size: 18px;
+            color: #3b82f6;
+        }
+        .comment-prefix {
+            color: #64748b;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            background: rgba(15, 23, 42, 0.85);
+            padding: 12px 24px;
+            border-radius: 30px;
+            color: #e2e8f0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer .heart {
+            color: #ef4444;
+            font-size: 18px;
+            animation: pulse 1.5s ease infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        #controls {
+            position: fixed;
+            top: 20px;
+            right: -320px;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 20px;
+            border-radius: 16px;
+            color: #fff;
+            z-index: 1000;
+            transition: right 0.3s ease;
+            width: 280px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        #controls.expanded {
+            right: 20px;
+        }
+        #togglePanel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: rgba(15, 23, 42, 0.95);
+            color: #e2e8f0;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+        }
+        #togglePanel:hover {
+            background: rgba(15, 23, 42, 1);
+            transform: translateY(-1px);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        .section {
+            margin-bottom: 24px;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+        .control-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #e2e8f0;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 3px;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #3b82f6;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .special-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .special-button {
+            background: rgba(59, 130, 246, 0.15) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            padding: 12px !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            letter-spacing: 0.02em;
+        }
+        .special-button:hover {
+            background: rgba(59, 130, 246, 0.25) !important;
+        }
+        .special-button.reset {
+            background: rgba(239, 68, 68, 0.15) !important;
+            border: 1px solid rgba(239, 68, 68, 0.3) !important;
+            color: rgb(254, 202, 202) !important;
+        }
+        .special-button.reset:hover {
+            background: rgba(239, 68, 68, 0.25) !important;
+        }
+        button {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 8px 12px;
+            color: #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        button:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateY(-1px);
+        }
+        button.active {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        #fpsCounter {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: #e2e8f0;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><span class="comment-prefix">// </span>Quantum Particles</h1>
+        <p><span class="comment-prefix">> </span>A mesmerizing particle physics simulation that brings quantum mechanics to life through interactive visual effects and real-time manipulation.</p>
+        <div class="tech-stack">
+            <div class="tech-item">
+                <i class="material-icons">code</i>
+                JavaScript
+            </div>
+            <div class="tech-item">
+                <i class="material-icons">html</i>
+                Canvas
+            </div>
+            <div class="tech-item">
+                <i class="material-icons">auto_fix_high</i>
+                WebGL
+            </div>
+        </div>
+    </div>
+
+    <canvas id="quantumCanvas"></canvas>
+    <div id="fpsCounter">FPS: 0</div>
+    <button id="togglePanel" onclick="document.getElementById('controls').classList.toggle('expanded')">Controls</button>
+    <div id="controls">
+        <div class="special-buttons">
+            <button class="special-button reset" onclick="window.animation.reset()">Reset All</button>
+            <button class="special-button" onclick="window.animation.randomize()">Randomize</button>
+        </div>
+        <div class="section">
+            <div class="section-title">Parameters</div>
+            <div class="control-group">
+                <label>Particle Count</label>
+                <input type="range" id="particleCount" min="50" max="500" value="150">
+            </div>
+            <div class="control-group">
+                <label>Connection Radius</label>
+                <input type="range" id="connectionRadius" min="50" max="300" value="150">
+            </div>
+            <div class="control-group">
+                <label>Particle Speed</label>
+                <input type="range" id="particleSpeed" min="0.1" max="3" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <label>Glow Intensity</label>
+                <input type="range" id="glowIntensity" min="0" max="40" value="20">
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Visual Styles</div>
+            <div class="button-grid">
+                <button onclick="window.animation.setPreset('cosmic')">Cosmic</button>
+                <button onclick="window.animation.setPreset('matrix')">Matrix</button>
+                <button onclick="window.animation.setPreset('fireflies')">Fireflies</button>
+                <button onclick="window.animation.setPreset('rainbow')">Rainbow</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Physics Effects</div>
+            <div class="button-grid">
+                <button onclick="window.animation.toggleGravityWell()">Gravity Well</button>
+                <button onclick="window.animation.toggleTimeDilation()">Time Dilation</button>
+                <button onclick="window.animation.toggleVortex()">Vortex</button>
+                <button onclick="window.animation.toggleBlackHole()">Black Hole</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Visual Effects</div>
+            <div class="button-grid">
+                <button onclick="window.animation.toggleColorWave()">Color Wave</button>
+                <button onclick="window.animation.toggleRepulsion()">Repulsion</button>
+                <button onclick="window.animation.togglePulseWave()">Pulse Wave</button>
+                <button onclick="window.animation.toggleTornado()">Tornado</button>
+                <button onclick="window.animation.toggleTrails()">Trails</button>
+                <button onclick="window.animation.triggerExplosion()">Explosion</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Made with <span class="material-icons heart">favorite</span> by CLOUDWERX LABS
+    </div>
+
+    <script src="particle-animation.js"></script>
+</body>
+</html>

@@ -1,25 +1,52 @@
-// src/components/sections/FaqSection.tsx
 "use client";
 
 import { useState } from 'react';
+import { z } from 'zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Bot, Loader2, Send } from 'lucide-react';
+
 import { aiFAQ, type AiFAQInput, type AiFAQOutput } from '@/ai/flows/ai-faq';
-import { Bot, Send, Loader2, AlertTriangle } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import Reveal from '@/components/ui/reveal';
+import { commonFaqs } from '@/lib/faq-data';
 
 const faqFormSchema = z.object({
-  question: z.string().min(5, { message: "Question must be at least 5 characters." }).max(200, { message: "Question must be less than 200 characters." }),
+  question: z.string().min(5, { message: 'Question must be at least 5 characters.' }).max(200, { message: 'Question must be less than 200 characters.' }),
 });
+
 type FaqFormValues = z.infer<typeof faqFormSchema>;
 
 interface FaqSectionProps {
   id: string;
+}
+
+const defaultFallbackAnswer =
+  'Thank you for your question. Please contact Jertine Tech for further details on the provided contact form.';
+
+function getFallbackAnswer(question: string): string {
+  const normalizedQuestion = question.toLowerCase();
+  let bestAnswer = '';
+  let bestScore = 0;
+
+  for (const item of commonFaqs) {
+    const candidate = `${item.question} ${item.answer}`.toLowerCase();
+    const score = normalizedQuestion
+      .split(/\s+/)
+      .filter((token) => token.length > 2)
+      .reduce((sum, token) => (candidate.includes(token) ? sum + 1 : sum), 0);
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestAnswer = item.answer;
+    }
+  }
+
+  return bestScore > 0 ? bestAnswer : defaultFallbackAnswer;
 }
 
 export default function FaqSection({ id }: FaqSectionProps) {
@@ -29,9 +56,7 @@ export default function FaqSection({ id }: FaqSectionProps) {
 
   const form = useForm<FaqFormValues>({
     resolver: zodResolver(faqFormSchema),
-    defaultValues: {
-      question: "",
-    },
+    defaultValues: { question: '' },
   });
 
   const onSubmit: SubmitHandler<FaqFormValues> = async (data) => {
@@ -42,84 +67,90 @@ export default function FaqSection({ id }: FaqSectionProps) {
       const input: AiFAQInput = { question: data.question };
       const result: AiFAQOutput = await aiFAQ(input);
       setAnswer(result.answer);
-    } catch (e) {
-      console.error("FAQ Error:", e);
-      setError("Sorry, I couldn't answer that question. Please try rephrasing or contact us directly.");
+    } catch (_error) {
+      setAnswer(getFallbackAnswer(data.question));
+      setError(null);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <section id={id} className="py-16 md:py-24 bg-background text-foreground">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4 font-headline">
-          Frequently Asked <span className="text-accent">Questions</span>
-        </h2>
-        <p className="text-lg text-muted-foreground text-center mb-12 max-w-2xl mx-auto">
-          Have questions about our services or how we work? Ask our AI assistant or check out some common queries below.
-        </p>
-        
-        <Card className="max-w-2xl mx-auto bg-card shadow-xl">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Bot className="h-7 w-7 mr-2 text-accent" />
-              AI-Powered FAQ Assistant
-            </CardTitle>
-            <CardDescription>
-              Ask a question about Jertine Tech's services, process, or pricing.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="question"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Your Question</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input placeholder="e.g., What are your graphic design rates?" {...field} className="pr-12" />
-                          <Button type="submit" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8" disabled={isLoading}>
-                            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                            <span className="sr-only">Ask</span>
-                          </Button>
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </form>
-            </Form>
-          </CardContent>
-          {(isLoading || answer || error) && (
-            <CardFooter className="flex flex-col items-start space-y-4">
-              {isLoading && (
-                <div className="flex items-center text-muted-foreground">
-                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                  <span>Thinking...</span>
-                </div>
-              )}
-              {error && (
-                <Alert variant="destructive" className="w-full">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertTitle>Error</AlertTitle>
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-              )}
-              {answer && !error && (
-                <Alert className="w-full bg-primary/5 border-primary/20">
-                   <Bot className="h-4 w-4 text-primary" />
-                  <AlertTitle className="text-primary">Answer</AlertTitle>
-                  <AlertDescription className="text-foreground/90">{answer}</AlertDescription>
-                </Alert>
-              )}
-            </CardFooter>
+    <section id={id} className="py-20 md:py-28">
+      <div className="section-shell grid gap-8 lg:grid-cols-2">
+        <div>
+          <Reveal>
+            <h2 className="font-body text-3xl font-bold md:text-5xl">
+              Answers for operations
+              <span className="block text-lime-300">where uptime matters.</span>
+            </h2>
+          </Reveal>
+          <Reveal delayMs={80}>
+            <div className="mt-8 glass-card rounded-2xl p-6">
+              <Accordion type="single" collapsible className="w-full">
+                {commonFaqs.map((item, idx) => (
+                  <AccordionItem value={`item-${idx + 1}`} key={item.question}>
+                    <AccordionTrigger className="text-left">{item.question}</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">{item.answer}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </Reveal>
+        </div>
+
+        <Reveal delayMs={120}>
+        <div className="glass-card hover-lift rounded-2xl p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <Bot className="h-5 w-5 text-lime-300" />
+            <p className="font-body text-xl font-semibold">AI FAQ Assistant</p>
+          </div>
+          <p className="mb-4 text-sm text-muted-foreground text-balance">Ask about software delivery, hardware support, timelines, or support models.</p>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="question"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Your Question</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input placeholder="Can you support 20 office desktops and a custom portal?" {...field} className="rounded-xl border-white/20 bg-white/5 pr-12" />
+                        <Button type="submit" size="icon" className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-lg bg-gradient-to-r from-lime-400 to-red-400 text-black hover:from-lime-300 hover:to-red-300" disabled={isLoading}>
+                          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </form>
+          </Form>
+
+          {isLoading && (
+            <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Thinking...
+            </div>
           )}
-        </Card>
+
+          {error && (
+            <Alert className="mt-4 border-destructive/40 bg-destructive/10">
+              <AlertTitle>Error</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          {answer && !error && (
+            <Alert className="mt-4 border-lime-300/40 bg-lime-500/10">
+              <AlertTitle className="text-lime-300">Answer</AlertTitle>
+              <AlertDescription>{answer}</AlertDescription>
+            </Alert>
+          )}
+        </div>
+        </Reveal>
       </div>
     </section>
   );

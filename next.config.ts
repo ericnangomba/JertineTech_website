@@ -2,6 +2,7 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  devIndicators: false,
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -17,6 +18,18 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/services',
+        destination: '/?view=services',
+      },
+      {
+        source: '/services/:slug',
+        destination: '/?view=service&service=:slug',
+      },
+    ];
   },
 };
 
