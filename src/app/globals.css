@@ -91,6 +91,15 @@
       radial-gradient(circle at 85% 25%, hsl(210 33% 95% / 0.08), transparent 40%),
       linear-gradient(180deg, hsl(222 20% 10%), hsl(222 20% 7%));
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-headline;
+  }
 }
 
 @layer components {

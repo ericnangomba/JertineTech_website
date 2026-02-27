@@ -11,8 +11,8 @@ export default {
     extend: {
       fontFamily: {
         body: ['ui-sans-serif', 'system-ui', 'Segoe UI', 'sans-serif'],
-        headline: ['"Zhima Mono"', 'ZhiMaMono', 'JetBrains Mono', 'ui-monospace', 'monospace'],
-        code: ['"Zhima Mono"', 'ZhiMaMono', 'JetBrains Mono', 'ui-monospace', 'monospace'],
+        headline: ['"ZhiMaMono-Regular"', '"Zhima Mono"', 'ZhiMaMono', 'JetBrains Mono', 'ui-monospace', 'monospace'],
+        code: ['"ZhiMaMono-Regular"', '"Zhima Mono"', 'ZhiMaMono', 'JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       colors: {
         background: 'hsl(var(--background))',

@@ -40,7 +40,7 @@ export default function WhyChooseUsSection({ id }: WhyChooseUsSectionProps) {
     <section id={id} className="py-20 md:py-28">
       <div className="section-shell">
         <Reveal>
-          <h2 className="text-center font-body text-3xl font-bold md:text-5xl">
+          <h2 className="text-center font-headline text-3xl font-bold md:text-5xl">
             Built for teams that need
             <span className="block text-lime-300">code and devices to just work.</span>
           </h2>
@@ -57,7 +57,7 @@ export default function WhyChooseUsSection({ id }: WhyChooseUsSectionProps) {
                 <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-lime-300/30 bg-gradient-to-br from-lime-400/20 to-red-400/15">
                   <usp.icon className="h-6 w-6 text-lime-300" />
                 </div>
-                <h3 className="font-body text-xl font-semibold text-card-foreground">{usp.title}</h3>
+                <h3 className="font-headline text-xl font-semibold text-card-foreground">{usp.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{usp.description}</p>
               </div>
             </Reveal>

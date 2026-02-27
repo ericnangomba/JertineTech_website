@@ -45,7 +45,7 @@ export default function ProcessSection({ id }: ProcessSectionProps) {
     <section id={id} className="py-20 md:py-28">
       <div className="section-shell">
         <Reveal>
-          <h2 className="text-center font-body text-3xl font-bold md:text-5xl">
+          <h2 className="text-center font-headline text-3xl font-bold md:text-5xl">
             Operational method.
             <span className="block text-lime-300">Engineering-level consistency.</span>
           </h2>
@@ -58,7 +58,7 @@ export default function ProcessSection({ id }: ProcessSectionProps) {
                   <item.icon className="h-6 w-6 text-lime-300" />
                   <span className="font-headline text-sm tracking-[0.24em] text-red-300">{item.step}</span>
                 </div>
-                <h3 className="mt-4 font-body text-2xl font-semibold">{item.title}</h3>
+                <h3 className="mt-4 font-headline text-2xl font-semibold">{item.title}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
               </div>
             </Reveal>

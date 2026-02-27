@@ -11,7 +11,7 @@ export default function AboutUsSection({ id }: AboutUsSectionProps) {
       <div className="section-shell">
         <div className="mx-auto max-w-5xl">
           <Reveal>
-            <h2 className="text-center font-body text-3xl font-bold md:text-5xl">
+            <h2 className="text-center font-headline text-3xl font-bold md:text-5xl">
               Engineering partner for
               <span className="block text-lime-300">software and hardware teams.</span>
             </h2>

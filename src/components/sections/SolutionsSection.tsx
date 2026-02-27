@@ -13,7 +13,7 @@ export default function SolutionsSection({ id }: SolutionsSectionProps) {
     <section id={id} className="py-20 md:py-28">
       <div className="section-shell">
         <Reveal>
-          <h2 className="text-center font-body text-3xl font-bold md:text-5xl">
+          <h2 className="text-center font-headline text-3xl font-bold md:text-5xl">
             Software precision.
             <span className="block text-lime-300">Hardware resilience.</span>
           </h2>
@@ -31,7 +31,7 @@ export default function SolutionsSection({ id }: SolutionsSectionProps) {
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-lime-300/30 bg-gradient-to-br from-lime-400/20 to-red-400/15">
                     <service.icon className="h-6 w-6 text-lime-300" />
                   </div>
-                  <CardTitle className="font-body text-2xl">{service.title}</CardTitle>
+                  <CardTitle className="font-headline text-2xl">{service.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-sm text-muted-foreground">{service.summary}</p>

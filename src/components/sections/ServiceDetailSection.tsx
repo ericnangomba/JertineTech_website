@@ -24,7 +24,7 @@ export default function ServiceDetailSection({ service }: ServiceDetailSectionPr
             </p>
           </Reveal>
           <Reveal delayMs={80}>
-            <h1 className="mt-4 flex items-center gap-3 font-body text-4xl font-bold md:text-6xl">
+            <h1 className="mt-4 flex items-center gap-3 font-headline text-4xl font-bold md:text-6xl">
               <service.icon className="h-10 w-10 text-lime-300 md:h-12 md:w-12" />
               {service.title}
             </h1>
@@ -53,7 +53,7 @@ export default function ServiceDetailSection({ service }: ServiceDetailSectionPr
               <div className="mt-4 space-y-4">
                 {service.caseStudies.map((study) => (
                   <article key={study.title} className="rounded-xl border border-lime-300/20 bg-black/30 p-4">
-                    <p className="font-body text-lg font-semibold text-white">{study.title}</p>
+                    <p className="font-headline text-lg font-semibold text-white">{study.title}</p>
                     <p className="mt-1 text-xs uppercase tracking-[0.16em] text-lime-300">{study.clientProfile}</p>
                     <p className="mt-3 text-sm text-foreground/90">
                       <span className="font-semibold text-white">Challenge:</span> {study.challenge}

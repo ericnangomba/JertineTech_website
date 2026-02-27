@@ -13,7 +13,7 @@ export default function ServicesCatalogSection() {
           </p>
         </Reveal>
         <Reveal delayMs={60}>
-          <h1 className="mt-4 font-body text-4xl font-bold md:text-6xl">Software. Hardware. One execution team.</h1>
+          <h1 className="mt-4 font-headline text-4xl font-bold md:text-6xl">Software. Hardware. One execution team.</h1>
         </Reveal>
         <Reveal delayMs={120}>
           <p className="mt-5 text-base text-muted-foreground md:text-lg">
@@ -27,7 +27,7 @@ export default function ServicesCatalogSection() {
           <Reveal key={service.slug} delayMs={index * 60}>
             <article className="glass-card hover-lift sheen rounded-2xl border-white/15 bg-black/20 p-6">
               <service.icon className="h-6 w-6 text-lime-300" />
-              <h2 className="mt-4 font-body text-2xl font-semibold">{service.title}</h2>
+              <h2 className="mt-4 font-headline text-2xl font-semibold">{service.title}</h2>
               <p className="mt-3 text-sm text-muted-foreground">{service.summary}</p>
               <p className="mt-4 rounded-xl border border-white/10 bg-black/20 p-3 text-sm text-foreground/90">{service.outcome}</p>
               <Link

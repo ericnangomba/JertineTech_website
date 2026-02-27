@@ -51,7 +51,7 @@ export default function ResultsSection({ id }: ResultsSectionProps) {
           </p>
         </Reveal>
         <Reveal delayMs={60}>
-          <h2 className="mt-4 text-center font-body text-3xl font-bold md:text-5xl">
+          <h2 className="mt-4 text-center font-headline text-3xl font-bold md:text-5xl">
             Outcomes you can operate on.
             <span className="block text-red-300">Not vague promises.</span>
           </h2>
@@ -67,7 +67,7 @@ export default function ResultsSection({ id }: ResultsSectionProps) {
             <Reveal key={item.label} delayMs={index * 70}>
               <div className="glass-card hover-lift rounded-2xl border-white/15 bg-black/20 p-6">
                 <item.icon className="h-5 w-5 text-lime-300" />
-                <p className="mt-4 font-body text-3xl font-semibold text-white">{item.value}</p>
+                <p className="mt-4 font-headline text-3xl font-semibold text-white">{item.value}</p>
                 <p className="mt-1 text-sm font-semibold text-foreground">{item.label}</p>
                 <p className="mt-2 text-xs text-muted-foreground">{item.detail}</p>
               </div>

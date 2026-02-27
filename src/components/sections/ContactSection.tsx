@@ -103,7 +103,7 @@ export default function ContactSection({ id }: ContactSectionProps) {
       <div className="section-shell grid gap-8 lg:grid-cols-2">
         <div>
           <Reveal>
-            <h2 className="font-body text-3xl font-bold md:text-5xl">
+            <h2 className="font-headline text-3xl font-bold md:text-5xl">
               Need software delivery
               <span className="block text-lime-300">plus dependable hardware support?</span>
             </h2>

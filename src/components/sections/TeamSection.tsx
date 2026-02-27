@@ -32,7 +32,7 @@ export default function TeamSection({ id }: TeamSectionProps) {
     <section id={id} className="py-20 md:py-28">
       <div className="section-shell">
         <Reveal>
-          <h2 className="text-center font-body text-3xl font-bold md:text-5xl">
+          <h2 className="text-center font-headline text-3xl font-bold md:text-5xl">
             Software and hardware
             <span className="block text-lime-300">specialists under one roof.</span>
           </h2>
@@ -53,7 +53,7 @@ export default function TeamSection({ id }: TeamSectionProps) {
                   <div className="pointer-events-none absolute bottom-0 left-0 z-20 h-1 w-0 bg-lime-300 transition-all duration-300 group-hover:w-full" />
                 </div>
                 <CardContent className="p-4">
-                  <p className="font-body text-lg font-semibold">{member.name}</p>
+                  <p className="font-headline text-lg font-semibold">{member.name}</p>
                   <p className="mt-1 flex items-center gap-1 text-xs uppercase tracking-[0.16em] text-muted-foreground">
                     <BriefcaseBusiness className="h-3.5 w-3.5 text-lime-300" />
                     {member.role}

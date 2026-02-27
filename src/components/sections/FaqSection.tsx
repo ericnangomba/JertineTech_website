@@ -98,7 +98,7 @@ export default function FaqSection({ id }: FaqSectionProps) {
       <div className="section-shell grid gap-8 lg:grid-cols-2">
         <div>
           <Reveal>
-            <h2 className="font-body text-3xl font-bold md:text-5xl">
+            <h2 className="font-headline text-3xl font-bold md:text-5xl">
               Answers for operations
               <span className="block text-lime-300">where uptime matters.</span>
             </h2>
@@ -121,7 +121,7 @@ export default function FaqSection({ id }: FaqSectionProps) {
         <div className="glass-card hover-lift rounded-2xl p-6">
           <div className="mb-4 flex items-center gap-2">
             <Bot className="h-5 w-5 text-lime-300" />
-            <p className="font-body text-xl font-semibold">AI FAQ Assistant</p>
+            <p className="font-headline text-xl font-semibold">AI FAQ Assistant</p>
           </div>
           <p className="mb-4 text-sm text-muted-foreground text-balance">Ask about software delivery, hardware support, timelines, or support models.</p>
           <Form {...form}>

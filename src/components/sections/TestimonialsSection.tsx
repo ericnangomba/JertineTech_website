@@ -35,7 +35,7 @@ export default function TestimonialsSection({ id }: TestimonialsSectionProps) {
     <section id={id} className="py-20 md:py-28">
       <div className="section-shell">
         <Reveal>
-          <h2 className="text-center font-body text-3xl font-bold md:text-5xl">
+          <h2 className="text-center font-headline text-3xl font-bold md:text-5xl">
             Trusted by teams with
             <span className="block text-red-300">real technical pressure.</span>
           </h2>
