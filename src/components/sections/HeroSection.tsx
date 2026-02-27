@@ -29,10 +29,11 @@ export default function HeroSection({ id }: HeroSectionProps) {
 
       <div className="relative z-20 section-shell">
         <div className="mx-auto max-w-4xl text-center">
-          <h1 className="animate-fade-up font-headline text-4xl font-bold leading-tight text-white md:text-6xl lg:text-7xl">
-            Systems Intergration.
-            <br />
-            <span className="text-lime-300">Software that ships. Hardware that holds.</span>
+          <h1 className="animate-fade-up font-headline font-bold leading-[1.08] tracking-[-0.02em] text-white text-[clamp(2rem,9vw,4.5rem)]">
+            <span className="block">Systems Intergration.</span>
+            <span className="mx-auto mt-2 block max-w-[20ch] text-[0.72em] leading-[1.18] text-lime-300 md:mt-3 md:max-w-none md:text-[0.58em]">
+              Software that ships. Hardware that holds.
+            </span>
           </h1>
           <p className="animate-fade-up animate-delay-100 mx-auto mt-6 max-w-2xl text-base text-white/85 md:text-xl">
             From custom application development to desktop and network support, we keep your business technology reliable and fast.
