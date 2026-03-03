@@ -13,6 +13,7 @@ interface TeamMember {
   name: string;
   role: string;
   image: StaticImageData;
+  focalPoint: string;
 }
 
 const teamMembers: TeamMember[] = [
@@ -20,26 +21,31 @@ const teamMembers: TeamMember[] = [
     name: 'Eric Nangomba',
     role: 'Lead Full-Stack Developer',
     image: EricNangombaImage,
+    focalPoint: '50% 18%',
   },
   {
     name: 'Xolisile Gwebityala',
     role: 'Backend Engineer',
     image: XolisileGwebityalaImage,
+    focalPoint: '50% 14%',
   },
   {
     name: 'Xola Maci',
     role: 'UI/UX Designer',
     image: XolaMaciImage,
+    focalPoint: '50% 16%',
   },
   {
     name: 'Erich Scholtz',
     role: 'Systems Infrastructure Lead',
     image: ErichScholtzImage,
+    focalPoint: '50% 17%',
   },
   {
     name: 'Thomas Dlamini',
     role: 'Technical Support Engineer',
     image: ThomasDlaminiImage,
+    focalPoint: '50% 10%',
   },
 ];
 
@@ -61,13 +67,14 @@ export default function TeamSection({ id }: TeamSectionProps) {
           {teamMembers.map((member, index) => (
             <Reveal key={member.name} delayMs={index * 65}>
               <Card className="glass-card hover-lift group overflow-hidden border-white/15">
-                <div className="relative h-60 w-full">
+                <div className="relative w-full aspect-[4/5] sm:aspect-[3/4]">
                   <Image
                     src={member.image}
                     alt={member.name}
                     fill
-                    sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    sizes="(min-width: 1280px) 18vw, (min-width: 1024px) 22vw, (min-width: 640px) 44vw, 92vw"
                     className="relative z-10 object-cover transition-transform duration-500 group-hover:scale-105"
+                    style={{ objectPosition: member.focalPoint }}
                     data-ai-hint="person portrait"
                   />
                   <div className="pointer-events-none absolute bottom-0 left-0 z-20 h-1 w-0 bg-lime-300 transition-all duration-300 group-hover:w-full" />
