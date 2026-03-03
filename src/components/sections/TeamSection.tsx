@@ -1,13 +1,13 @@
-import Image, { type StaticImageData } from 'next/image';
+import Image from 'next/image';
+import type { StaticImageData } from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { BriefcaseBusiness } from 'lucide-react';
 import Reveal from '@/components/ui/reveal';
-
-import johannesVenterImage from '../../images/johannesventer.jpg';
-import ericImage from '../../images/eric.jpg';
-import xolisilePicImage from '../../images/xolisilepic.png';
-import welfordKulisewaImage from '../../images/welford.jpeg';
-import unathiDoboImage from '../../images/unathi dobo.png';
+import EricNangombaImage from '../../images/Eric Nangomba.jpg';
+import XolisileGwebityalaImage from '../../images/Xolisile Gwebityala.png';
+import XolaMaciImage from '../../images/Xola Maci.png';
+import ErichScholtzImage from '../../images/Erich Scholtz.jpg';
+import ThomasDlaminiImage from '../../images/Thomas Dlamini.jpg';
 
 interface TeamMember {
   name: string;
@@ -16,11 +16,31 @@ interface TeamMember {
 }
 
 const teamMembers: TeamMember[] = [
-  { name: 'Johannes Venter', role: 'UI/UX Designer', image: johannesVenterImage },
-  { name: 'Eric Nangomba', role: 'Lead Developer', image: ericImage },
-  { name: 'Xolisile Gwebityala', role: 'Lead Developer', image: xolisilePicImage },
-  { name: 'Welford Kulisewa', role: 'Project Manager', image: welfordKulisewaImage },
-  { name: 'Unathi Dobo', role: 'Marketing Specialist', image: unathiDoboImage },
+  {
+    name: 'Eric Nangomba',
+    role: 'Lead Full-Stack Developer',
+    image: EricNangombaImage,
+  },
+  {
+    name: 'Xolisile Gwebityala',
+    role: 'Backend Engineer',
+    image: XolisileGwebityalaImage,
+  },
+  {
+    name: 'Xola Maci',
+    role: 'UI/UX Designer',
+    image: XolaMaciImage,
+  },
+  {
+    name: 'Erich Scholtz',
+    role: 'Systems Infrastructure Lead',
+    image: ErichScholtzImage,
+  },
+  {
+    name: 'Thomas Dlamini',
+    role: 'Technical Support Engineer',
+    image: ThomasDlaminiImage,
+  },
 ];
 
 interface TeamSectionProps {

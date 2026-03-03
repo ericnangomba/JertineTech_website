@@ -17,27 +17,49 @@ import {
   type ContactSubmissionPayload,
 } from '@/lib/contact-security';
 
+const publicContactWebhookUrl = process.env.NEXT_PUBLIC_CONTACT_WEBHOOK_URL;
+
+function buildMailtoLink(data: ContactSubmissionPayload): string {
+  const subject = encodeURIComponent(`Website inquiry from ${data.name}`);
+  const body = encodeURIComponent(
+    `Name: ${data.name}\nEmail: ${data.email}\n\nMessage:\n${data.message}`
+  );
+  return `mailto:info@jertinetech.co.za?subject=${subject}&body=${body}`;
+}
+
 async function submitInquiryAction(data: ContactSubmissionPayload): Promise<{ success: boolean; message: string }> {
-  const response = await fetch('/api/contact', {
+  if (!publicContactWebhookUrl) {
+    return {
+      success: true,
+      message: 'No webhook configured. Opening your email app now.',
+    };
+  }
+
+  const response = await fetch(publicContactWebhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      source: 'jertinetech-website-static',
+      type: 'contact_inquiry',
+      name: data.name,
+      email: data.email,
+      message: data.message,
+      receivedAt: new Date().toISOString(),
+    }),
   });
-
-  const result = (await response.json()) as { success?: boolean; message?: string };
 
   if (!response.ok) {
     return {
       success: false,
-      message: result.message ?? 'Submission failed. Please try again.',
+      message: 'Submission failed. Please try again.',
     };
   }
 
   return {
     success: true,
-    message: result.message ?? "Your inquiry was sent. We'll reply within one business day.",
+    message: "Your inquiry was sent. We'll reply within one business day.",
   };
 }
 
@@ -79,6 +101,9 @@ export default function ContactSection({ id }: ContactSectionProps) {
     setIsSubmitting(true);
     try {
       const result = await submitInquiryAction(data);
+      if (!publicContactWebhookUrl) {
+        window.location.href = buildMailtoLink(data);
+      }
       toast({
         title: result.success ? 'Message Sent' : 'Submission Failed',
         description: result.message,

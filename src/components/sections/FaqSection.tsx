@@ -19,10 +19,6 @@ const faqFormSchema = z.object({
 });
 
 type FaqFormValues = z.infer<typeof faqFormSchema>;
-type FaqApiResponse = {
-  answer?: string;
-  error?: string;
-};
 
 interface FaqSectionProps {
   id: string;
@@ -67,24 +63,9 @@ export default function FaqSection({ id }: FaqSectionProps) {
     setError(null);
     setAnswer(null);
     try {
-      const response = await fetch('/api/faq', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ question: data.question }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Unable to fetch AI response');
-      }
-
-      const result = (await response.json()) as FaqApiResponse;
-      if (!result.answer) {
-        throw new Error(result.error ?? 'No answer returned');
-      }
-
-      setAnswer(result.answer);
+      // Static-export compatible FAQ fallback.
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      setAnswer(getFallbackAnswer(data.question));
     } catch (_error) {
       setAnswer(getFallbackAnswer(data.question));
       setError(null);

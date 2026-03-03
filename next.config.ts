@@ -1,19 +1,10 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   devIndicators: false,
-  output: 'standalone',
+  output: 'export',
+  trailingSlash: true,
   outputFileTracingRoot: process.cwd(),
-  serverExternalPackages: [
-    'genkit',
-    '@genkit-ai/core',
-    '@genkit-ai/googleai',
-    '@opentelemetry/sdk-node',
-    '@opentelemetry/exporter-jaeger',
-    'handlebars',
-    'dotprompt',
-  ],
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -21,6 +12,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -28,30 +20,13 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
-  },
-  async rewrites() {
-    return [
-      {
-        source: '/services',
-        destination: '/?view=services',
-      },
-      {
-        source: '/services/:slug',
-        destination: '/?view=service&service=:slug',
-      },
-    ];
-  },
-  webpack(config) {
-    config.ignoreWarnings = [
-      ...(config.ignoreWarnings ?? []),
-      { module: /@opentelemetry[\\/]sdk-node/ },
-      { module: /handlebars/ },
-      /Can't resolve '@opentelemetry\/exporter-jaeger'/,
-      /require\.extensions is not supported by webpack/,
-    ];
-
-    return config;
   },
 };
 
