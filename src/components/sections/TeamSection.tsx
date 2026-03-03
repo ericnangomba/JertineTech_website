@@ -45,7 +45,7 @@ const teamMembers: TeamMember[] = [
     name: 'Thomas Dlamini',
     role: 'Technical Support Engineer',
     image: ThomasDlaminiImage,
-    focalPoint: '50% 10%',
+    focalPoint: '50% 7%',
   },
 ];
 
