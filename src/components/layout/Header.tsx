@@ -131,7 +131,7 @@ export default function Header() {
     >
       <div className="section-shell flex h-20 items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
-          <BrandWordmark className="text-2xl" />
+          <BrandWordmark className="h-7 w-auto" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -170,7 +170,7 @@ export default function Header() {
               <div className="flex h-full flex-col">
                 <div className="flex items-center justify-between border-b border-white/10 p-4">
                   <Link href="/" className="flex items-center gap-2">
-                    <BrandWordmark className="text-xl" />
+                    <BrandWordmark className="h-6 w-auto" />
                   </Link>
                   <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setIsMobileMenuOpen(false)}>
                     <X className="h-5 w-5" />

@@ -63,6 +63,9 @@ const CODE_LINE_POOL = [
   'let bits = 0b10101010;',
 ];
 
+const WHITE_TEXT_COLOR = 'hsla(0, 0%, 100%, 0.95)';
+const BRACKET_AND_BRACE_TOKENS = new Set(['{', '}', '[', ']']);
+
 function randomToken(): string {
   return TOKEN_POOL[Math.floor(Math.random() * TOKEN_POOL.length)];
 }
@@ -89,9 +92,18 @@ function randomLineColor(): string {
   return palette[Math.floor(Math.random() * palette.length)]();
 }
 
+function shouldUseWhiteTokenColor(token: string): boolean {
+  return BRACKET_AND_BRACE_TOKENS.has(token);
+}
+
+function shouldUseWhiteLineColor(lineText: string): boolean {
+  return lineText.toLowerCase().includes('jertine');
+}
+
 function createToken(width: number, height: number): CodeToken {
   const x = Math.random() * width;
   const y = Math.random() * height;
+  const text = randomToken();
   return {
     x,
     y,
@@ -99,25 +111,26 @@ function createToken(width: number, height: number): CodeToken {
     homeY: y,
     dx: (Math.random() - 0.5) * 0.22,
     dy: (Math.random() - 0.5) * 0.22,
-    text: randomToken(),
+    text,
     size: Math.random() * 7 + 10,
     alpha: Math.random() * 0.55 + 0.35,
-    color: randomColor(),
+    color: shouldUseWhiteTokenColor(text) ? WHITE_TEXT_COLOR : randomColor(),
   };
 }
 
 function createTypingLine(width: number, height: number): TypingLine {
+  const text = randomCodeLine();
   return {
     x: Math.random() * Math.max(220, width - 320) + 24,
     y: Math.random() * Math.max(120, height - 120) + 24,
-    text: randomCodeLine(),
+    text,
     typed: 0,
     speed: Math.random() * 0.45 + 0.2,
     life: 0,
     maxLife: Math.floor(Math.random() * 260) + 220,
     size: Math.random() * 2 + 11,
     drift: (Math.random() - 0.5) * 0.1,
-    color: randomLineColor(),
+    color: shouldUseWhiteLineColor(text) ? WHITE_TEXT_COLOR : randomLineColor(),
   };
 }
 
@@ -281,7 +294,10 @@ export default function QuantumParticleBackground() {
         if (token.x < 0 || token.x > width) token.dx *= -1;
         if (token.y < 0 || token.y > height) token.dy *= -1;
 
-        if (Math.random() < 0.0022) token.text = randomToken();
+        if (Math.random() < 0.0022) {
+          token.text = randomToken();
+          token.color = shouldUseWhiteTokenColor(token.text) ? WHITE_TEXT_COLOR : randomColor();
+        }
 
         ctx.font = `${Math.round(token.size)}px "Fira Code", "JetBrains Mono", "ZhiMaMono", monospace`;
         ctx.fillStyle = token.color;

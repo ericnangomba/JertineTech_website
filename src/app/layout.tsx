@@ -9,7 +9,12 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://jertinetech.co.za'),
   keywords: ['software development', 'hardware support', 'managed infrastructure', 'SME technology partner', 'South Africa IT support'],
   icons: {
-    icon: '/favicon.png',
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon.png', type: 'image/png' },
+    ],
+    shortcut: [{ url: '/favicon.ico' }],
+    apple: [{ url: '/favicon.png', type: 'image/png' }],
   },
   openGraph: {
     title: 'Jertine Tech | Integrated Software & Hardware Solutions',

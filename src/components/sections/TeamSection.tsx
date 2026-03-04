@@ -5,7 +5,7 @@ import { BriefcaseBusiness } from 'lucide-react';
 import Reveal from '@/components/ui/reveal';
 import EricNangombaImage from '../../images/Eric Nangomba.jpg';
 import XolisileGwebityalaImage from '../../images/Xolisile Gwebityala.png';
-import XolaMaciImage from '../../images/Xola Maci.png';
+import XolaMaciImage from '../../images/Xola Maci.jpg';
 import ErichScholtzImage from '../../images/Erich Scholtz.jpg';
 import ThomasDlaminiImage from '../../images/Thomas Dlamini.jpg';
 

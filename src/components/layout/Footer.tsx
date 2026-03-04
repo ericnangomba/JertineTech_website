@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="section-shell">
         <div className="grid gap-8 md:grid-cols-3">
           <div>
-            <BrandWordmark className="text-xl" />
+            <BrandWordmark className="h-6 w-auto" />
             <p className="mt-2 max-w-xs text-sm text-muted-foreground">
               Software development and hardware support for growth-focused teams.
             </p>

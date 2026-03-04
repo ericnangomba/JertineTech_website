@@ -1,4 +1,6 @@
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import webLogo from '@/images/jertine_weblogo.png';
 
 interface BrandWordmarkProps {
   className?: string;
@@ -6,9 +8,12 @@ interface BrandWordmarkProps {
 
 export default function BrandWordmark({ className }: BrandWordmarkProps) {
   return (
-    <span className={cn('font-headline font-semibold tracking-wide', className)}>
-      <span className="text-white">Jertine</span>{' '}
-      <span className="text-lime-300">TECH</span>
-    </span>
+    <Image
+      src={webLogo}
+      alt="Jertine Tech"
+      className={cn('h-7 w-auto', className)}
+      sizes="(max-width: 768px) 180px, 230px"
+      priority
+    />
   );
 }
