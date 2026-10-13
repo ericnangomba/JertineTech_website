@@ -3,11 +3,11 @@ import type { StaticImageData } from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { BriefcaseBusiness } from 'lucide-react';
 import Reveal from '@/components/ui/reveal';
+import SarahRockwellImage from '../../images/Sarah Rockwell.jpg';
+import RobinSchoenImage from '../../images/Robin Schoen.jpg';
+import HazelChisesaImage from '../../images/Hazel Chisesa.jpg';
 import EricNangombaImage from '../../images/Eric Nangomba.jpg';
-import XolisileGwebityalaImage from '../../images/Xolisile Gwebityala.png';
-import XolaMaciImage from '../../images/Xola Maci.jpg';
-import ErichScholtzImage from '../../images/Erich Scholtz.jpg';
-import ThomasDlaminiImage from '../../images/Thomas Dlamini.jpg';
+import ChancyBwanaliImage from '../../images/Chancy Bwanali.jpg';
 
 interface TeamMember {
   name: string;
@@ -18,34 +18,34 @@ interface TeamMember {
 
 const teamMembers: TeamMember[] = [
   {
+    name: 'Sarah Rockwell',
+    role: 'Technical Lead',
+    image: SarahRockwellImage,
+    focalPoint: '50% 18%',
+  },
+  {
+    name: 'Robin Schoen',
+    role: 'Solutions Architect',
+    image: RobinSchoenImage,
+    focalPoint: '50% 18%',
+  },
+  {
+    name: 'Hazel Chisesa',
+    role: 'Account Manager',
+    image: HazelChisesaImage,
+    focalPoint: '50% 18%',
+  },
+  {
     name: 'Eric Nangomba',
-    role: 'Lead Full-Stack Developer',
+    role: 'Full Stack Developer',
     image: EricNangombaImage,
     focalPoint: '50% 18%',
   },
   {
-    name: 'Xolisile Gwebityala',
-    role: 'Backend Engineer',
-    image: XolisileGwebityalaImage,
-    focalPoint: '50% 14%',
-  },
-  {
-    name: 'Xola Maci',
-    role: 'UI/UX Designer',
-    image: XolaMaciImage,
-    focalPoint: '50% 16%',
-  },
-  {
-    name: 'Erich Scholtz',
-    role: 'Systems Infrastructure Lead',
-    image: ErichScholtzImage,
-    focalPoint: '50% 17%',
-  },
-  {
-    name: 'Thomas Dlamini',
-    role: 'Technical Support Engineer',
-    image: ThomasDlaminiImage,
-    focalPoint: '50% 7%',
+    name: 'Chancy Bwanali',
+    role: 'Project Manager',
+    image: ChancyBwanaliImage,
+    focalPoint: '50% 18%',
   },
 ];
 
